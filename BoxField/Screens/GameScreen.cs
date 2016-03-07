@@ -12,9 +12,11 @@ namespace BoxField
 {
     public partial class GameScreen : UserControl
     {
-        int ranNum;
+        
         int personX = 400;
         int personY = 400;
+        int ranMin = -100;
+        int ranMax = 101;
         Random ran = new Random();
         //player1 button control keys - DO NOT CHANGE
         Boolean leftArrowDown, downArrowDown, rightArrowDown, upArrowDown, bDown, nDown, mDown, spaceDown;
@@ -26,6 +28,8 @@ namespace BoxField
         // create a list of Boxes
 
         List<Box> boxes = new List<Box>();
+        
+        
      
 
         int waitTime = 18;
@@ -37,11 +41,11 @@ namespace BoxField
         private void GameScreen_Load(object sender, EventArgs e)
         {
             // - create initial box object and add it to list of Boxes
-            Box b = new Box(500 + ran.Next(-5, 6), 0);
+            Box b = new Box( 500 + ran.Next(ranMin, ranMax), 0, Color.Green);
             boxes.Add(b);
-            Box c = new Box(200 + ran.Next(-5, 6), 0);
+            Box c = new Box(200 + ran.Next(ranMin, ranMax), 0, Color.Green);
             boxes.Add(c);
-            Box d = new Box(800 + ran.Next(-5, 6), 0);
+            Box d = new Box(800 + ran.Next(ranMin, ranMax), 0, Color.Green);
             boxes.Add(d);
 
         }
@@ -133,26 +137,29 @@ namespace BoxField
             {
                 personY -= 5;
             }
+            //forcefield collision
             for (int i = 0; i < boxes.Count; i++)
             {
-                if (boxes[i].x + 30 >= personX - 20 &&boxes[i].x <= personX&& boxes[i].y + 20 <= personY + 60 && boxes[i].y + 20 >= personY + 20)
+                if (boxes[i].x + 30 >= personX - 20 && boxes[i].x <= personX && boxes[i].y + 20 <= personY + 60 && boxes[i].y + 20 >= personY + 20)
                 {
                     boxes[i].x -= 10;
-                   
-                   
-
+                    boxes[i].boxColor = Color.Fuchsia;
                 }
                 if (boxes[i].x + 30 >= personX - 20 && boxes[i].x <= personX + 30 && boxes[i].y + 30 >= personY - 20 && boxes[i].y <= personY)
                 {
                     boxes[i].y -= 10;
+                    boxes[i].boxColor = Color.Fuchsia;
+
                 }
                 if (boxes[i].x <= personX + 30 && boxes[i].x >= personX + 10 && boxes[i].y + 30 >= personY - 20 && boxes[i].y <= personY)
                 {
                     boxes[i].x += 10;
+                    boxes[i].boxColor = Color.Fuchsia;
                 }
                 if(boxes[i].x + 30 >= personX - 20 && boxes[i].x <= personX + 30 && boxes[i].y <= personY + 70 && boxes[i].y >= personY + 50)
                 {
                     boxes[i].y += 10;
+                    boxes[i].boxColor = Color.Fuchsia;
                 }
 
             }
@@ -162,11 +169,11 @@ namespace BoxField
                 
                // add new boxes
               
-                Box b = new Box(500 + ran.Next(-5,6), 0);
+                Box b = new Box(500 + ran.Next(ranMin,ranMax), 0, Color.Green);
                 boxes.Add(b);
-                Box c = new Box(200 + ran.Next(-5, 6), 0);
+                Box c = new Box(200 + ran.Next(ranMin, ranMax), 0, Color.Green);
                 boxes.Add(c);
-                Box d = new Box(800 + ran.Next(-5, 6), 0);
+                Box d = new Box(800 + ran.Next(ranMin, ranMax), 0, Color.Green);
                 boxes.Add(d);
                 waitTime = 18;
             }
@@ -179,33 +186,33 @@ namespace BoxField
                 boxes[i].y += 2;
                 if (boxes[i].y >= 0)
                 {
-                    boxes[i].x-= ran.Next(-5,6);
+                    boxes[i].x-= ran.Next(ranMin,ranMax);
                   
                 }
                 if (boxes[i].y >= 100)
                 {
                     
-                    boxes[i].x+= ran.Next(-5, 6);
+                    boxes[i].x+= ran.Next(ranMin, ranMax);
                     
                 }
                 if (boxes[i].y >= 200)
                 {
-                    boxes[i].x -= ran.Next(-5, 6);
+                    boxes[i].x -= ran.Next(ranMin, ranMax);
                    
                 }
                 if (boxes[i].y >= 300)
                 {
-                    boxes[i].x += ran.Next(-5, 6);
+                    boxes[i].x += ran.Next(ranMin, ranMax);
                     
                 }
                 if (boxes[i].y >= 400)
                 {
-                    boxes[i].x -= ran.Next(-5, 6);
+                    boxes[i].x -= ran.Next(ranMin, ranMax);
                  
                 }
                 if (boxes[i].y >= 500)
                 {
-                    boxes[i].x += ran.Next(-5, 6);
+                    boxes[i].x += ran.Next(ranMin, ranMax);
                    
                 }
 
@@ -224,22 +231,25 @@ namespace BoxField
 
         private void GameScreen_Paint(object sender, PaintEventArgs e)
         {
+            //draw my character with the forcefield 
+            e.Graphics.FillRectangle(drawBrush, personX, personY, 10, 40);
             // - draw each box to the screen
-            e.Graphics.FillRectangle(drawBrush,personX,personY,10,40);
-            
+
+
             
             foreach (Box b in boxes)
             {
-               
-                e.Graphics.FillRectangle(boxBrush, b.x, b.y, 30, 30);
-               
+                boxBrush.Color = b.boxColor;
+                e.Graphics.FillRectangle(boxBrush, b.x, b.y, 30, 30);               
             }
             foreach(Box c in boxes)
             {
+                boxBrush.Color = c.boxColor;
                 e.Graphics.FillRectangle(boxBrush, c.x, c.y, 30, 30);
             }
             foreach (Box d in boxes)
             {
+                boxBrush.Color = d.boxColor;
                 e.Graphics.FillRectangle(boxBrush, d.x, d.y, 30, 30);
             }
 
